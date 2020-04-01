@@ -1,6 +1,6 @@
 use crossterm::{
     cursor::{Hide, MoveTo, Show},
-    event::{read, DisableMouseCapture, EnableMouseCapture},
+    event::{read, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
     execute,
     terminal::{
         disable_raw_mode, enable_raw_mode, Clear, ClearType, EnterAlternateScreen,
@@ -54,7 +54,14 @@ fn draw() -> Result<()> {
     }
 
     stdout().flush()?;
-    read()?;
+
+    loop {
+        match read()? {
+            Event::Key(x) if x == KeyCode::Esc.into() => break,
+            Event::Resize(_, _) => draw()?,
+            _ => (),
+        }
+    }
 
     Ok(())
 }
