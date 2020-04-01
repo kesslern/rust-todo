@@ -8,6 +8,9 @@ use crossterm::{
     },
     Result,
 };
+use std::env::var;
+use std::process::Command;
+use tempfile::NamedTempFile;
 
 use std::io::{stdout, Write};
 
@@ -51,21 +54,41 @@ fn draw_size() -> Result<()> {
     Ok(())
 }
 
+fn test() -> Result<String> {
+    let file = NamedTempFile::new()?;
+    let mut child = Command::new(var("EDITOR").unwrap())
+        .arg(file.path())
+        .spawn()
+        .expect("failed to execute child");
+
+    let ecode = child.wait().expect("failed to wait on child");
+    assert!(ecode.success());
+    let contents = std::fs::read_to_string(file.path())?;
+    Ok(contents)
+}
+
 fn draw() -> Result<()> {
-    let (_, y) = crossterm::terminal::size()?;
-    execute!(stdout(), Clear(ClearType::All),)?;
-    draw_size()?;
-
-    for i in 0..y {
-        execute!(stdout(), MoveTo(0, i))?;
-        print!("{:?}", i);
-    }
-
-    stdout().flush()?;
+    let mut contents: String = "".to_string();
 
     loop {
+        let (_, y) = crossterm::terminal::size()?;
+        execute!(stdout(), Clear(ClearType::All),)?;
+        draw_size()?;
+
+        execute!(stdout(), MoveTo(0, 0))?;
+        print!("{:?}", contents);
+
+        for i in 1..y {
+            execute!(stdout(), MoveTo(0, i))?;
+            print!("{:?}", i);
+        }
+
+        stdout().flush()?;
         match read()? {
             Event::Key(x) if x == KeyCode::Esc.into() => break,
+            Event::Key(x) if x == KeyCode::Char('t').into() => {
+                contents = test()?;
+            }
             Event::Resize(_, _) => draw()?,
             _ => (),
         }
