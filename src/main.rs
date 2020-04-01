@@ -40,13 +40,21 @@ fn cleanup() -> Result<()> {
     Ok(())
 }
 
+fn draw_size() -> Result<()> {
+    let (x, y) = crossterm::terminal::size()?;
+    let draw_x = x - 6;
+    execute!(stdout(), MoveTo(draw_x, 0))?;
+    print!("X: {:?}", x);
+    execute!(stdout(), MoveTo(draw_x, 1))?;
+    print!("Y: {:?}", y);
+
+    Ok(())
+}
+
 fn draw() -> Result<()> {
     let (x, y) = crossterm::terminal::size()?;
     execute!(stdout(), Clear(ClearType::All),)?;
-    execute!(stdout(), MoveTo(10, 0))?;
-    print!("X: {:?}", x);
-    execute!(stdout(), MoveTo(10, 1))?;
-    print!("Y: {:?}", y);
+    draw_size()?;
 
     for i in 0..y {
         execute!(stdout(), MoveTo(0, i))?;
