@@ -11,7 +11,7 @@ use crossterm::{
 
 use std::io::{stdout, Write};
 
-fn main() -> Result<()> {
+fn init() -> Result<()> {
     enable_raw_mode()?;
 
     execute!(
@@ -23,6 +23,24 @@ fn main() -> Result<()> {
         EnableMouseCapture,
     )?;
 
+    Ok(())
+}
+
+fn cleanup() -> Result<()> {
+    execute!(
+        stdout(),
+        crossterm::terminal::Clear(ClearType::All),
+        LeaveAlternateScreen,
+        DisableMouseCapture,
+        Show
+    )?;
+
+    disable_raw_mode()?;
+
+    Ok(())
+}
+
+fn draw() -> Result<()> {
     let (x, y) = crossterm::terminal::size()?;
     execute!(stdout(), Clear(ClearType::All),)?;
     execute!(stdout(), MoveTo(10, 0))?;
@@ -38,15 +56,23 @@ fn main() -> Result<()> {
     stdout().flush()?;
     read()?;
 
-    execute!(
-        stdout(),
-        crossterm::terminal::Clear(ClearType::All),
-        LeaveAlternateScreen,
-        DisableMouseCapture,
-        Show
-    )?;
+    Ok(())
+}
 
-    disable_raw_mode()?;
+fn run() -> Result<()> {
+    init()?;
+    draw()?;
+    cleanup()?;
 
     Ok(())
+}
+
+fn main() {
+    std::process::exit(match run() {
+        Ok(_) => 0,
+        Err(err) => {
+            eprintln!("error: {:?}", err);
+            1
+        }
+    });
 }
