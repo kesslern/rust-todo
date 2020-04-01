@@ -52,7 +52,7 @@ fn draw_size() -> Result<()> {
 }
 
 fn draw() -> Result<()> {
-    let (x, y) = crossterm::terminal::size()?;
+    let (_, y) = crossterm::terminal::size()?;
     execute!(stdout(), Clear(ClearType::All),)?;
     draw_size()?;
 
