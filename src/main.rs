@@ -54,7 +54,7 @@ fn draw_size() -> Result<()> {
     Ok(())
 }
 
-fn test() -> Result<String> {
+fn input_from_file() -> Result<String> {
     let file = NamedTempFile::new()?;
     let mut child = Command::new(var("EDITOR").unwrap())
         .arg(file.path())
@@ -87,7 +87,7 @@ fn draw() -> Result<()> {
         match read()? {
             Event::Key(x) if x == KeyCode::Esc.into() => break,
             Event::Key(x) if x == KeyCode::Char('t').into() => {
-                contents = test()?;
+                contents = input_from_file()?;
             }
             Event::Resize(_, _) => draw()?,
             _ => (),
