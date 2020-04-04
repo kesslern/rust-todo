@@ -25,8 +25,8 @@ struct TodoState {
 }
 
 enum TodoEvent {
-    ContentChanged(String),
-    ResizeScreen(ScreenSize),
+    ContentChange(String),
+    ScreenResize(),
 }
 
 impl TodoState {
@@ -39,17 +39,18 @@ impl TodoState {
         });
     }
 
-    pub fn dispatch(&mut self, event: TodoEvent) {
+    pub fn dispatch(&mut self, event: TodoEvent) -> Result<()> {
         match event {
-            TodoEvent::ContentChanged(content) => {
-                println!("content changed");
+            TodoEvent::ContentChange(content) => {
                 self.content = Some(content);
             }
-            TodoEvent::ResizeScreen(screen_size) => {
-                println!("resized");
-                self.screen_size = screen_size;
+            TodoEvent::ScreenResize() => {
+                let (width, height) = crossterm::terminal::size()?;
+                self.screen_size = ScreenSize { width, height };
             }
         }
+
+        Ok(())
     }
 
     fn draw_size(&self) -> Result<()> {
@@ -130,11 +131,10 @@ fn run_loop() -> Result<()> {
         match read()? {
             Event::Key(x) if x == KeyCode::Esc.into() => break,
             Event::Key(x) if x == KeyCode::Char('t').into() => {
-                state.dispatch(TodoEvent::ContentChanged(input_from_file()?));
+                state.dispatch(TodoEvent::ContentChange(input_from_file()?))?;
             }
             Event::Resize(_, _) => {
-                let (width, height) = crossterm::terminal::size()?;
-                state.dispatch(TodoEvent::ResizeScreen(ScreenSize { width, height }));
+                state.dispatch(TodoEvent::ScreenResize())?;
             }
             _ => (),
         }
