@@ -14,6 +14,71 @@ use tempfile::NamedTempFile;
 
 use std::io::{stdout, Write};
 
+struct ScreenSize {
+    width: u16,
+    height: u16,
+}
+
+struct TodoState {
+    screen_size: ScreenSize,
+    content: Option<String>,
+}
+
+enum TodoEvent {
+    ContentChanged(String),
+    ResizeScreen(ScreenSize),
+}
+
+impl TodoState {
+    pub fn new() -> Result<TodoState> {
+        let (width, height) = crossterm::terminal::size()?;
+
+        return Ok(TodoState {
+            content: None,
+            screen_size: ScreenSize { width, height },
+        });
+    }
+
+    pub fn dispatch(&mut self, event: TodoEvent) {
+        match event {
+            TodoEvent::ContentChanged(content) => {
+                println!("content changed");
+                self.content = Some(content);
+            }
+            TodoEvent::ResizeScreen(screen_size) => {
+                println!("resized");
+                self.screen_size = screen_size;
+            }
+        }
+    }
+
+    fn draw_size(&self) -> Result<()> {
+        let ScreenSize { width, height } = self.screen_size;
+        let draw_x = width - 6;
+        execute!(stdout(), MoveTo(draw_x, 0))?;
+        print!("X: {:?}", width);
+        execute!(stdout(), MoveTo(draw_x, 1))?;
+        print!("Y: {:?}", height);
+
+        Ok(())
+    }
+
+    pub fn draw(&self) -> Result<()> {
+        execute!(stdout(), Clear(ClearType::All),)?;
+        self.draw_size()?;
+        execute!(stdout(), MoveTo(0, 0))?;
+        print!("{:?}", self.content);
+
+        for i in 1..self.screen_size.height {
+            execute!(stdout(), MoveTo(0, i))?;
+            print!("{:?}", i);
+        }
+
+        stdout().flush()?;
+        Ok(())
+    }
+}
+
 fn init() -> Result<()> {
     enable_raw_mode()?;
 
@@ -43,17 +108,6 @@ fn cleanup() -> Result<()> {
     Ok(())
 }
 
-fn draw_size() -> Result<()> {
-    let (x, y) = crossterm::terminal::size()?;
-    let draw_x = x - 6;
-    execute!(stdout(), MoveTo(draw_x, 0))?;
-    print!("X: {:?}", x);
-    execute!(stdout(), MoveTo(draw_x, 1))?;
-    print!("Y: {:?}", y);
-
-    Ok(())
-}
-
 fn input_from_file() -> Result<String> {
     let file = NamedTempFile::new()?;
     let mut child = Command::new(var("EDITOR").unwrap())
@@ -67,29 +121,21 @@ fn input_from_file() -> Result<String> {
     Ok(contents)
 }
 
-fn draw() -> Result<()> {
-    let mut contents: String = "".to_string();
+fn run_loop() -> Result<()> {
+    let mut state = TodoState::new()?;
 
     loop {
-        let (_, y) = crossterm::terminal::size()?;
-        execute!(stdout(), Clear(ClearType::All),)?;
-        draw_size()?;
+        state.draw()?;
 
-        execute!(stdout(), MoveTo(0, 0))?;
-        print!("{:?}", contents);
-
-        for i in 1..y {
-            execute!(stdout(), MoveTo(0, i))?;
-            print!("{:?}", i);
-        }
-
-        stdout().flush()?;
         match read()? {
             Event::Key(x) if x == KeyCode::Esc.into() => break,
             Event::Key(x) if x == KeyCode::Char('t').into() => {
-                contents = input_from_file()?;
+                state.dispatch(TodoEvent::ContentChanged(input_from_file()?));
             }
-            Event::Resize(_, _) => draw()?,
+            Event::Resize(_, _) => {
+                let (width, height) = crossterm::terminal::size()?;
+                state.dispatch(TodoEvent::ResizeScreen(ScreenSize { width, height }));
+            }
             _ => (),
         }
     }
@@ -99,7 +145,7 @@ fn draw() -> Result<()> {
 
 fn run() -> Result<()> {
     init()?;
-    draw()?;
+    run_loop()?;
     cleanup()?;
 
     Ok(())
@@ -109,6 +155,7 @@ fn main() {
     std::process::exit(match run() {
         Ok(_) => 0,
         Err(err) => {
+            cleanup().unwrap();
             eprintln!("error: {:?}", err);
             1
         }
