@@ -3,6 +3,7 @@ use crossterm::{
   cursor::{Hide, MoveTo, Show},
   event::{DisableMouseCapture, EnableMouseCapture},
   execute,
+  style::Print,
   terminal::{
     disable_raw_mode, enable_raw_mode, size, Clear, ClearType, EnterAlternateScreen,
     LeaveAlternateScreen,
@@ -37,10 +38,15 @@ impl Screen {
   fn draw_size(&self) -> Result<()> {
     let Screen { width, height } = self;
     let draw_x = width - 6;
-    execute!(stdout(), MoveTo(draw_x, 0))?;
-    print!("X: {:?}", width);
-    execute!(stdout(), MoveTo(draw_x, 1))?;
-    print!("Y: {:?}", height);
+    execute!(
+      stdout(),
+      MoveTo(draw_x, 0),
+      Print("X: "),
+      Print(width),
+      MoveTo(draw_x, 1),
+      Print("Y: "),
+      Print(height),
+    )?;
 
     Ok(())
   }
@@ -54,13 +60,15 @@ impl Screen {
     print!("\u{2557}");
 
     for i in 1..height - 1 {
-      execute!(stdout(), MoveTo(x, y + i))?;
-      print!("\u{2551}");
-      execute!(stdout(), MoveTo(x + width - 1, y + i))?;
-      print!("\u{2551}");
+      execute!(
+        stdout(),
+        MoveTo(x, y + i),
+        Print("\u{2551}"),
+        MoveTo(x + width - 1, y + i),
+        Print("\u{2551}"),
+      )?;
     }
-    execute!(stdout(), MoveTo(x, y + height - 1))?;
-    print!("\u{255A}");
+    execute!(stdout(), MoveTo(x, y + height - 1), Print("\u{255A}"))?;
     for _ in 1..width - 1 {
       print!("\u{2550}");
     }
@@ -84,17 +92,15 @@ impl Screen {
   pub fn draw(&self, state: &State) -> Result<()> {
     self.clear()?;
     self.draw_size()?;
-    self.draw_box(5, 5, 2, 2)?;
+    self.draw_box(5, 5, 5, 10)?;
     execute!(stdout(), MoveTo(0, 0))?;
 
     for (idx, todo) in state.todos.iter().enumerate() {
-      execute!(stdout(), MoveTo(0, idx as u16))?;
-      print!("{}", todo);
+      execute!(stdout(), MoveTo(0, idx as u16), Print(todo))?;
     }
 
     for i in 1..self.height {
-      execute!(stdout(), MoveTo(0, i))?;
-      print!("{:?}", i);
+      execute!(stdout(), MoveTo(0, i), Print(i))?;
     }
 
     stdout().flush()?;
