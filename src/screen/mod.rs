@@ -84,23 +84,31 @@ impl Screen {
     Ok(())
   }
 
-  pub fn clear(&self) -> Result<()> {
+  fn clear(&self) -> Result<()> {
     execute!(stdout(), Clear(ClearType::All))?;
+    Ok(())
+  }
+
+  fn draw_string(&self, string: &str, x: u16, y: u16, max_width: usize) -> Result<()> {
+    let string: &str = if string.len() > max_width {
+      string.split_at(max_width).0
+    } else {
+      &string[..]
+    };
+    execute!(stdout(), MoveTo(x, y), Print(string))?;
+
     Ok(())
   }
 
   pub fn draw(&self, state: &State) -> Result<()> {
     self.clear()?;
     self.draw_size()?;
-    self.draw_box(5, 5, 5, 10)?;
+    self.draw_box(0, 0, self.width, self.height)?;
+    self.draw_string(&"1234567", 6, 6, 5)?;
     execute!(stdout(), MoveTo(0, 0))?;
 
     for (idx, todo) in state.todos.iter().enumerate() {
       execute!(stdout(), MoveTo(0, idx as u16), Print(todo))?;
-    }
-
-    for i in 1..self.height {
-      execute!(stdout(), MoveTo(0, i), Print(i))?;
     }
 
     stdout().flush()?;
