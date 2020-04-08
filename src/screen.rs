@@ -32,7 +32,7 @@ impl Screen {
       EnableMouseCapture,
     )?;
 
-    return Ok(screen);
+    Ok(screen)
   }
 
   fn draw_size(&self) -> Result<()> {

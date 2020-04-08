@@ -15,12 +15,12 @@ pub struct Square {
 
 impl Square {
   pub fn new() -> Square {
-    return Square {
+    Square {
       x: 0,
       y: 0,
       width: 5,
       height: 5,
-    };
+    }
   }
 }
 
