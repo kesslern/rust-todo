@@ -51,32 +51,6 @@ impl Screen {
     Ok(())
   }
 
-  fn draw_box(&self, x: u16, y: u16, width: u16, height: u16) -> Result<()> {
-    execute!(stdout(), MoveTo(x, y))?;
-    print!("\u{2554}");
-    for _ in 1..width - 1 {
-      print!("\u{2550}");
-    }
-    print!("\u{2557}");
-
-    for i in 1..height - 1 {
-      execute!(
-        stdout(),
-        MoveTo(x, y + i),
-        Print("\u{2551}"),
-        MoveTo(x + width - 1, y + i),
-        Print("\u{2551}"),
-      )?;
-    }
-    execute!(stdout(), MoveTo(x, y + height - 1), Print("\u{255A}"))?;
-    for _ in 1..width - 1 {
-      print!("\u{2550}");
-    }
-    print!("\u{255D}");
-
-    Ok(())
-  }
-
   pub fn handle_resize(&mut self) -> Result<()> {
     let (width, height) = size()?;
     self.width = width;
@@ -84,12 +58,12 @@ impl Screen {
     Ok(())
   }
 
-  fn clear(&self) -> Result<()> {
+  pub fn clear(&self) -> Result<()> {
     execute!(stdout(), Clear(ClearType::All))?;
     Ok(())
   }
 
-  fn draw_string(&self, string: &str, x: u16, y: u16, max_width: usize) -> Result<()> {
+  pub fn draw_string(&self, string: &str, x: u16, y: u16, max_width: usize) -> Result<()> {
     let string: &str = if string.len() > max_width {
       string.split_at(max_width).0
     } else {
@@ -101,9 +75,7 @@ impl Screen {
   }
 
   pub fn draw(&self, state: &State) -> Result<()> {
-    self.clear()?;
     self.draw_size()?;
-    self.draw_box(0, 0, self.width, self.height)?;
     self.draw_string(&"1234567", 6, 6, 5)?;
     execute!(stdout(), MoveTo(0, 0))?;
 
