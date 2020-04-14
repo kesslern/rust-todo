@@ -12,15 +12,10 @@ use crossterm::{
 };
 use std::io::{stdout, Write};
 
-pub struct Screen {
-  width: u16,
-  height: u16,
-}
+pub struct Screen {}
 
 impl Screen {
   pub fn new() -> Result<Screen> {
-    let (width, height) = size()?;
-    let screen = Screen { width, height };
     enable_raw_mode()?;
 
     execute!(
@@ -32,11 +27,11 @@ impl Screen {
       EnableMouseCapture,
     )?;
 
-    Ok(screen)
+    Ok(Screen {})
   }
 
-  fn draw_size(&self) -> Result<()> {
-    let Screen { width, height } = self;
+  fn draw_size() -> Result<()> {
+    let (width, height) = size()?;
     let draw_x = width - 6;
     execute!(
       stdout(),
@@ -51,19 +46,12 @@ impl Screen {
     Ok(())
   }
 
-  pub fn handle_resize(&mut self) -> Result<()> {
-    let (width, height) = size()?;
-    self.width = width;
-    self.height = height;
-    Ok(())
-  }
-
   pub fn clear(&self) -> Result<()> {
     execute!(stdout(), Clear(ClearType::All))?;
     Ok(())
   }
 
-  pub fn draw_string(&self, string: &str, x: u16, y: u16, max_width: usize) -> Result<()> {
+  pub fn draw_string(string: &str, x: u16, y: u16, max_width: usize) -> Result<()> {
     let string: &str = if string.len() > max_width {
       string.split_at(max_width).0
     } else {
@@ -74,9 +62,9 @@ impl Screen {
     Ok(())
   }
 
-  pub fn draw(&self, state: &State) -> Result<()> {
-    self.draw_size()?;
-    self.draw_string(&"1234567", 6, 6, 5)?;
+  pub fn draw(state: &State) -> Result<()> {
+    Self::draw_size()?;
+    Self::draw_string(&"1234567", 6, 6, 5)?;
     execute!(stdout(), MoveTo(0, 0))?;
 
     for (idx, todo) in state.todos.iter().enumerate() {

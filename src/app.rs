@@ -26,7 +26,6 @@ impl State {
 
 pub enum TodoEvent {
   AddTodo(String),
-  ScreenResize(),
 }
 
 impl TodoApp {
@@ -41,9 +40,6 @@ impl TodoApp {
     match event {
       TodoEvent::AddTodo(content) => {
         self.state.todos.push(content);
-      }
-      TodoEvent::ScreenResize() => {
-        self.screen.handle_resize()?;
       }
     }
 
@@ -68,15 +64,12 @@ impl TodoApp {
     loop {
       self.screen.clear()?;
       square.draw(&self.screen)?;
-      self.screen.draw(&mut self.state)?;
+      Screen::draw(&mut self.state)?;
 
       match read()? {
         Event::Key(x) if x == KeyCode::Esc.into() => break,
         Event::Key(x) if x == KeyCode::Char('a').into() => {
           self.dispatch(TodoEvent::AddTodo(TodoApp::input_from_file()?))?;
-        }
-        Event::Resize(_, _) => {
-          self.dispatch(TodoEvent::ScreenResize())?;
         }
         _ => (),
       }
