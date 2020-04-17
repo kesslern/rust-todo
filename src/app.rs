@@ -1,5 +1,4 @@
-use super::components::Drawable;
-use super::components::Square;
+use super::components::{Drawable, Square, Text};
 use super::screen::Screen;
 use crossterm::{
   event::{read, Event, KeyCode},
@@ -61,9 +60,11 @@ impl TodoApp {
 
   pub fn run(&mut self) -> Result<()> {
     let square = Square::new();
+    let text = Text::new();
     loop {
       self.screen.clear()?;
-      square.draw(&self.screen)?;
+      square.draw()?;
+      text.draw()?;
       Screen::draw(&mut self.state)?;
 
       match read()? {
