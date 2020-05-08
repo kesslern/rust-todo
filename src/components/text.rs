@@ -5,6 +5,7 @@ use crossterm::{cursor::MoveTo, execute, style::Print, Result};
 use std::io::{stdout, Write};
 use unicode_segmentation::UnicodeSegmentation;
 
+/// A basic text component, allowing a string to be printed at a given location with an optional max length.
 pub struct Text<'a> {
   content: &'a str,
   max_length: Option<u16>,

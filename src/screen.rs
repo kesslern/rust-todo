@@ -5,13 +5,13 @@ use crossterm::{
   execute,
   style::Print,
   terminal::{
-    disable_raw_mode, enable_raw_mode, size, Clear, ClearType, EnterAlternateScreen,
-    LeaveAlternateScreen,
+    disable_raw_mode, enable_raw_mode, Clear, ClearType, EnterAlternateScreen, LeaveAlternateScreen,
   },
   Result,
 };
 use std::io::{stdout, Write};
 
+/// The screen on which everything is drawn.
 pub struct Screen {}
 
 impl Screen {
@@ -28,22 +28,6 @@ impl Screen {
     )?;
 
     Ok(Screen {})
-  }
-
-  fn draw_size() -> Result<()> {
-    let (width, height) = size()?;
-    let draw_x = width - 6;
-    execute!(
-      stdout(),
-      MoveTo(draw_x, 0),
-      Print("X: "),
-      Print(width),
-      MoveTo(draw_x, 1),
-      Print("Y: "),
-      Print(height),
-    )?;
-
-    Ok(())
   }
 
   pub fn clear(&self) -> Result<()> {
@@ -63,7 +47,6 @@ impl Screen {
   }
 
   pub fn draw(state: &State) -> Result<()> {
-    Self::draw_size()?;
     Self::draw_string(&"1234567", 6, 6, 5)?;
     execute!(stdout(), MoveTo(0, 0))?;
 

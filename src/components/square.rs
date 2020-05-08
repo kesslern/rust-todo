@@ -2,6 +2,7 @@ use super::Drawable;
 use crossterm::{cursor::MoveTo, execute, style::Print, Result};
 use std::io::{stdout, Write};
 
+/// A square with a position and size.
 pub struct Square {
   x: u16,
   y: u16,
