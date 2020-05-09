@@ -2,14 +2,17 @@ use super::components::{Drawable, Square, Text};
 use super::screen::Screen;
 use crossterm::{
   event::{read, Event, KeyCode},
+  execute,
+  terminal::{Clear, ClearType},
   Result,
 };
 use std::env::var;
+use std::io::{stdout, Write};
 use std::process::Command;
 use tempfile::NamedTempFile;
 
 pub struct TodoApp {
-  screen: Screen,
+  _screen: Screen,
   state: State,
 }
 
@@ -29,10 +32,10 @@ pub enum TodoEvent {
 
 impl TodoApp {
   pub fn new() -> Result<TodoApp> {
-    let screen = Screen::new()?;
+    let _screen = Screen::new()?;
     let state = State::new();
 
-    Ok(TodoApp { screen, state })
+    Ok(TodoApp { _screen, state })
   }
 
   pub fn dispatch(&mut self, event: TodoEvent) -> Result<()> {
@@ -62,7 +65,7 @@ impl TodoApp {
     let square = Square::new();
     let text = Text::new();
     loop {
-      self.screen.clear()?;
+      execute!(stdout(), Clear(ClearType::All))?;
       square.draw()?;
       text.draw()?;
       Screen::draw(&mut self.state)?;

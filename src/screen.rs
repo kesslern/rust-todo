@@ -30,11 +30,6 @@ impl Screen {
     Ok(Screen {})
   }
 
-  pub fn clear(&self) -> Result<()> {
-    execute!(stdout(), Clear(ClearType::All))?;
-    Ok(())
-  }
-
   pub fn draw_string(string: &str, x: u16, y: u16, max_width: usize) -> Result<()> {
     let string: &str = if string.len() > max_width {
       string.split_at(max_width).0
