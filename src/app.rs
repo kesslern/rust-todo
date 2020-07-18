@@ -1,7 +1,8 @@
 use super::components::{Drawable, Square, Text};
 use super::screen::Screen;
 use crossterm::{
-    event::{read, Event, KeyCode},
+    cursor::Hide,
+    event::{read, EnableMouseCapture, Event, KeyCode},
     execute,
     terminal::{Clear, ClearType},
     Result,
@@ -57,6 +58,7 @@ impl TodoApp {
             .expect("failed to execute child");
 
         let ecode = child.wait().expect("failed to wait on child");
+        execute!(stdout(), Hide, EnableMouseCapture,)?;
         assert!(ecode.success());
         let contents = std::fs::read_to_string(file.path())?;
         Ok(contents)
