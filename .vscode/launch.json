@@ -6,22 +6,9 @@
   "configurations": [
     {
       "type": "lldb",
-      "request": "launch",
-      "name": "Debug unit tests in library 'rust-todo'",
-      "cargo": {
-        "args": [
-          "test",
-          "--no-run",
-          "--lib",
-          "--package=rust-todo"
-        ],
-        "filter": {
-          "name": "rust-todo",
-          "kind": "lib"
-        }
-      },
-      "args": [],
-      "cwd": "${workspaceFolder}"
+      "request": "attach",
+      "name": "Attach",
+      "program": "${workspaceFolder}/target/debug/rust-todo"
     },
     {
       "type": "lldb",
@@ -39,26 +26,11 @@
         }
       },
       "args": [],
-      "cwd": "${workspaceFolder}"
-    },
-    {
-      "type": "lldb",
-      "request": "launch",
-      "name": "Debug unit tests in executable 'rust-todo'",
-      "cargo": {
-        "args": [
-          "test",
-          "--no-run",
-          "--bin=rust-todo",
-          "--package=rust-todo"
-        ],
-        "filter": {
-          "name": "rust-todo",
-          "kind": "bin"
-        }
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "EDITOR": "/home/nathan/.bin/ew"
       },
-      "args": [],
-      "cwd": "${workspaceFolder}"
-    }
+      "terminal": "external"
+    },
   ]
 }
