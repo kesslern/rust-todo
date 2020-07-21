@@ -1,5 +1,5 @@
-use super::components::{Drawable, Square, Text};
-use super::screen::Screen;
+use crate::components::{Drawable, Square, Text};
+use crate::screen::Screen;
 use crossterm::{
     cursor::Hide,
     event::{read, EnableMouseCapture, Event, KeyCode},

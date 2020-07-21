@@ -1,4 +1,5 @@
-use super::app::State;
+use crate::app::State;
+
 use crossterm::{
     cursor::{Hide, MoveTo, Show},
     event::{DisableMouseCapture, EnableMouseCapture},

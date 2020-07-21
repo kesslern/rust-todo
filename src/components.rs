@@ -1,6 +1,6 @@
-pub mod square;
-pub mod text;
-pub mod traits;
+mod square;
+mod text;
+mod traits;
 
 pub use square::Square;
 pub use text::Text;

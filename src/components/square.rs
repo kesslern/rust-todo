@@ -1,4 +1,6 @@
-use super::Drawable;
+use crate::components::Drawable;
+use crate::constants::CHARS;
+
 use crossterm::{cursor::MoveTo, execute, style::Print, Result};
 use std::io::{stdout, Write};
 
@@ -21,36 +23,6 @@ impl Square {
         }
     }
 }
-
-struct Single<'a> {
-    top_left: &'a str,
-    top_right: &'a str,
-    bottom_left: &'a str,
-    bottom_right: &'a str,
-    horizontal: &'a str,
-    vertical: &'a str,
-}
-
-struct Lines<'a> {
-    single: Single<'a>,
-}
-
-struct Chars<'a> {
-    lines: Lines<'a>,
-}
-
-const CHARS: Chars<'static> = Chars {
-    lines: Lines {
-        single: Single {
-            top_left: "\u{2554}",
-            top_right: "\u{2557}",
-            bottom_left: "\u{255A}",
-            bottom_right: "\u{255D}",
-            horizontal: "\u{2550}",
-            vertical: "\u{2551}",
-        },
-    },
-};
 
 impl Drawable for Square {
     fn draw(&self) -> Result<()> {

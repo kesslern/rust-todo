@@ -1,5 +1,10 @@
+pub mod app;
+pub mod components;
+pub mod constants;
+mod screen;
+
+use app::TodoApp;
 use crossterm::Result;
-use rust_todo::app::TodoApp;
 
 fn run() -> Result<()> {
     let mut app = TodoApp::new()?;
