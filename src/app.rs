@@ -1,4 +1,5 @@
-use crate::components::{Drawable, Square, Text};
+use crate::components::{Drawable, Text};
+use crate::primitives::Square;
 use crate::screen::Screen;
 use crossterm::{
     cursor::Hide,

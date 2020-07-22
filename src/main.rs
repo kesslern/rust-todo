@@ -1,6 +1,8 @@
 pub mod app;
 pub mod components;
 pub mod constants;
+pub mod primitives;
+
 mod screen;
 
 use app::TodoApp;
