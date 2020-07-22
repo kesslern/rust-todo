@@ -1,6 +1,6 @@
 extern crate unicode_segmentation;
 
-use crate::components::Draw;
+use crate::traits::Draw;
 use crossterm::{cursor::MoveTo, execute, style::Print, Result};
 use std::io::{stdout, Write};
 use unicode_segmentation::UnicodeSegmentation;

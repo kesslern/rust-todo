@@ -1,5 +1,5 @@
-use crate::components::Draw;
 use crate::constants::CHARS;
+use crate::traits::Draw;
 
 use crossterm::{cursor::MoveTo, execute, style::Print, Result};
 use std::io::{stdout, Write};

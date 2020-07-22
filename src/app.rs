@@ -1,6 +1,7 @@
-use crate::components::{Draw, Text};
+use crate::components::Text;
 use crate::primitives::Square;
 use crate::screen::Screen;
+use crate::traits::Draw;
 use crossterm::{
     cursor::Hide,
     event::{read, EnableMouseCapture, Event, KeyCode},
