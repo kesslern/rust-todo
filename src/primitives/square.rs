@@ -15,12 +15,19 @@ pub struct Square {
 
 impl Draw for Square {
     fn draw(&self) -> Result<()> {
-        execute!(stdout(), MoveTo(self.x, self.y))?;
-        print!("{}", CHARS.lines.single.top_left);
-        for _ in 1..self.width - 1 {
-            print!("{}", CHARS.lines.single.horizontal);
-        }
-        print!("{}", CHARS.lines.single.top_right);
+        execute!(
+            stdout(),
+            MoveTo(self.x, self.y),
+            Print(CHARS.lines.single.top_left),
+            Print(
+                CHARS
+                    .lines
+                    .single
+                    .horizontal
+                    .repeat(usize::from(self.width - 2))
+            ),
+            Print(CHARS.lines.single.top_right),
+        )?;
 
         for i in 1..self.height - 1 {
             execute!(
@@ -31,15 +38,20 @@ impl Draw for Square {
                 Print(CHARS.lines.single.vertical),
             )?;
         }
+
         execute!(
             stdout(),
             MoveTo(self.x, self.y + self.height - 1),
-            Print(CHARS.lines.single.bottom_left)
+            Print(CHARS.lines.single.bottom_left),
+            Print(
+                CHARS
+                    .lines
+                    .single
+                    .horizontal
+                    .repeat(usize::from(self.width - 2))
+            ),
+            Print(CHARS.lines.single.bottom_right),
         )?;
-        for _ in 1..self.width - 1 {
-            print!("{}", CHARS.lines.single.horizontal);
-        }
-        print!("{}", CHARS.lines.single.bottom_right);
 
         Ok(())
     }
