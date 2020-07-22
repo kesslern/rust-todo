@@ -1,6 +1,6 @@
 extern crate unicode_segmentation;
 
-use crate::components::Drawable;
+use crate::components::Draw;
 use crossterm::{cursor::MoveTo, execute, style::Print, Result};
 use std::io::{stdout, Write};
 use unicode_segmentation::UnicodeSegmentation;
@@ -25,7 +25,7 @@ impl Text<'_> {
     }
 }
 
-impl Drawable for Text<'_> {
+impl Draw for Text<'_> {
     fn draw(&self) -> Result<()> {
         execute!(stdout(), MoveTo(self.x, self.y), Print(self.content))?;
 

@@ -1,4 +1,4 @@
-use crate::components::Drawable;
+use crate::components::Draw;
 use crate::constants::CHARS;
 
 use crossterm::{cursor::MoveTo, execute, style::Print, Result};
@@ -24,7 +24,7 @@ impl Square {
     }
 }
 
-impl Drawable for Square {
+impl Draw for Square {
     fn draw(&self) -> Result<()> {
         execute!(stdout(), MoveTo(self.x, self.y))?;
         print!("{}", CHARS.lines.single.top_left);

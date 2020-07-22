@@ -1,4 +1,4 @@
-use crate::components::{Drawable, Text};
+use crate::components::{Draw, Text};
 use crate::primitives::Square;
 use crate::screen::Screen;
 use crossterm::{

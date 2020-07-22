@@ -1,6 +1,6 @@
 use crossterm::Result;
 
 /// A drawable component.
-pub trait Drawable {
+pub trait Draw {
     fn draw(&self) -> Result<()>;
 }
