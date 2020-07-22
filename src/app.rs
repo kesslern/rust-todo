@@ -67,7 +67,12 @@ impl TodoApp {
     }
 
     pub fn run(&mut self) -> Result<()> {
-        let square = Square::new();
+        let square = Square {
+            x: 5,
+            y: 5,
+            width: 10,
+            height: 15,
+        };
         let text = Text::new();
         loop {
             execute!(stdout(), Clear(ClearType::All))?;

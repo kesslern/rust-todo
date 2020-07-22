@@ -7,21 +7,10 @@ use std::io::{stdout, Write};
 /// A square with a position and size.
 #[derive(Default)]
 pub struct Square {
-    x: u16,
-    y: u16,
-    width: u16,
-    height: u16,
-}
-
-impl Square {
-    pub fn new() -> Square {
-        Square {
-            x: 5,
-            y: 5,
-            width: 5,
-            height: 5,
-        }
-    }
+    pub x: u16,
+    pub y: u16,
+    pub width: u16,
+    pub height: u16,
 }
 
 impl Draw for Square {
