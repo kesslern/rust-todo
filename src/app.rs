@@ -73,6 +73,7 @@ impl TodoApp {
             y: 5,
             width: 10,
             height: 15,
+            filled: Some(()),
             colors: Some(Colors {
                 foreground: Some(Color::Rgb { r: 0, g: 0, b: 255 }),
                 background: Some(Color::Rgb {

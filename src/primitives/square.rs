@@ -25,6 +25,7 @@ impl Default for LineType {
 pub struct Square {
     pub line_type: LineType,
     pub colors: Option<Colors>,
+    pub filled: Option<()>,
     pub x: u16,
     pub y: u16,
     pub width: u16,
@@ -51,13 +52,21 @@ impl Draw for Square {
         )?;
 
         for i in 1..self.height - 1 {
-            execute!(
-                stdout(),
-                MoveTo(self.x, self.y + i),
-                Print(chars.vertical),
-                MoveTo(self.x + self.width - 1, self.y + i),
-                Print(chars.vertical),
-            )?;
+            execute!(stdout(), MoveTo(self.x, self.y + i), Print(chars.vertical))?;
+
+            if self.filled.is_some() {
+                execute!(
+                    stdout(),
+                    Print(" ".repeat(usize::from(self.width - 2))),
+                    Print(chars.vertical),
+                )?;
+            } else {
+                execute!(
+                    stdout(),
+                    MoveTo(self.x + self.width - 1, self.y + i),
+                    Print(chars.vertical),
+                )?;
+            }
         }
 
         execute!(
