@@ -72,6 +72,7 @@ impl TodoApp {
             y: 5,
             width: 10,
             height: 15,
+            ..Default::default()
         };
         let text = Text::new();
         loop {
