@@ -6,6 +6,7 @@ use crossterm::{
     cursor::Hide,
     event::{read, EnableMouseCapture, Event, KeyCode},
     execute,
+    style::{Color, Colors},
     terminal::{Clear, ClearType},
     Result,
 };
@@ -72,6 +73,14 @@ impl TodoApp {
             y: 5,
             width: 10,
             height: 15,
+            colors: Some(Colors {
+                foreground: Some(Color::Rgb { r: 0, g: 0, b: 255 }),
+                background: Some(Color::Rgb {
+                    r: 200,
+                    g: 0,
+                    b: 200,
+                }),
+            }),
             ..Default::default()
         };
         let text = Text::new();

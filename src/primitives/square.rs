@@ -1,7 +1,12 @@
 use crate::constants::{LineChars, CHARS};
 use crate::traits::Draw;
 
-use crossterm::{cursor::MoveTo, execute, style::Print, Result};
+use crossterm::{
+    cursor::MoveTo,
+    execute,
+    style::{Color, Colors, Print, SetColors},
+    Result,
+};
 use std::io::{stdout, Write};
 
 pub enum LineType {
@@ -19,6 +24,7 @@ impl Default for LineType {
 #[derive(Default)]
 pub struct Square {
     pub line_type: LineType,
+    pub colors: Option<Colors>,
     pub x: u16,
     pub y: u16,
     pub width: u16,
@@ -31,6 +37,10 @@ impl Draw for Square {
             LineType::Double => CHARS.lines.double,
             LineType::Single => CHARS.lines.single,
         };
+
+        if let Some(colors) = &self.colors {
+            execute!(stdout(), SetColors(*colors))?;
+        }
 
         execute!(
             stdout(),
@@ -57,6 +67,16 @@ impl Draw for Square {
             Print(chars.horizontal.repeat(usize::from(self.width - 2))),
             Print(chars.bottom_right),
         )?;
+
+        if self.colors.is_some() {
+            execute!(
+                stdout(),
+                SetColors(Colors {
+                    foreground: Some(Color::Reset),
+                    background: Some(Color::Reset)
+                })
+            )?;
+        }
 
         Ok(())
     }
