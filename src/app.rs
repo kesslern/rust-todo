@@ -1,7 +1,7 @@
-use crate::components::Text;
+use crate::components::{CountSquare, Text};
 use crate::primitives::Square;
 use crate::screen::Screen;
-use crate::traits::Draw;
+use crate::traits::{Draw, HandleEvent};
 use crossterm::{
     cursor::Hide,
     event::{read, EnableMouseCapture, Event, KeyCode},
@@ -84,20 +84,45 @@ impl TodoApp {
             }),
             ..Default::default()
         };
+        let mut count_square = CountSquare {
+            square: Square {
+                x: 25,
+                y: 5,
+                width: 10,
+                height: 15,
+                filled: Some(()),
+                colors: Some(Colors {
+                    foreground: Some(Color::Rgb { r: 0, g: 0, b: 255 }),
+                    background: Some(Color::Rgb {
+                        r: 200,
+                        g: 0,
+                        b: 200,
+                    }),
+                }),
+                ..Default::default()
+            },
+            count: 0,
+        };
+
         let text = Text::new();
         loop {
             execute!(stdout(), Clear(ClearType::All))?;
             square.draw()?;
             text.draw()?;
             Screen::draw(&self.state)?;
+            count_square.draw()?;
 
-            match read()? {
+            let event = read()?;
+
+            match event {
                 Event::Key(x) if x == KeyCode::Esc.into() => break,
                 Event::Key(x) if x == KeyCode::Char('a').into() => {
                     self.dispatch(TodoEvent::AddTodo(TodoApp::input_from_file()?))?;
                 }
                 _ => (),
             }
+
+            count_square.dispatch(event)?;
         }
 
         Ok(())
