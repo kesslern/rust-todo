@@ -1,5 +1,5 @@
-use crate::components::{CountSquare, Text};
-use crate::primitives::Square;
+use crate::components::{CountSquareBuilder, Text};
+use crate::primitives::SquareBuilder;
 use crate::screen::Screen;
 use crate::traits::{Draw, HandleEvent};
 use crossterm::{
@@ -68,41 +68,33 @@ impl TodoApp {
     }
 
     pub fn run(&mut self) -> Result<()> {
-        let square = Square {
-            x: 5,
-            y: 5,
-            width: 10,
-            height: 15,
-            filled: Some(()),
-            colors: Some(Colors {
+        let square = SquareBuilder::new(5, 5, 10, 15)
+            .is_filled(true)
+            .with_colors(Colors {
                 foreground: Some(Color::Rgb { r: 0, g: 0, b: 255 }),
                 background: Some(Color::Rgb {
                     r: 200,
                     g: 0,
                     b: 200,
                 }),
-            }),
-            ..Default::default()
-        };
-        let mut count_square = CountSquare {
-            square: Square {
-                x: 25,
-                y: 5,
-                width: 10,
-                height: 15,
-                filled: Some(()),
-                colors: Some(Colors {
-                    foreground: Some(Color::Rgb { r: 0, g: 0, b: 255 }),
-                    background: Some(Color::Rgb {
-                        r: 200,
-                        g: 0,
-                        b: 200,
-                    }),
-                }),
-                ..Default::default()
-            },
-            count: 0,
-        };
+            })
+            .build();
+
+        let mut count_square = CountSquareBuilder::new()
+            .with_square(
+                SquareBuilder::new(25, 5, 10, 15)
+                    .is_filled(true)
+                    .with_colors(Colors {
+                        foreground: Some(Color::Rgb { r: 0, g: 0, b: 255 }),
+                        background: Some(Color::Rgb {
+                            r: 200,
+                            g: 0,
+                            b: 200,
+                        }),
+                    })
+                    .build(),
+            )
+            .build();
 
         let text = Text::new();
         loop {

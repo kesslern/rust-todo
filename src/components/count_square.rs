@@ -9,9 +9,35 @@ use crossterm::{
 };
 use std::io::{stdout, Write};
 
+#[derive(Default)]
 pub struct CountSquare {
     pub square: Square,
     pub count: u16,
+}
+
+#[derive(Default)]
+pub struct CountSquareBuilder {
+    square: Square,
+}
+
+impl CountSquareBuilder {
+    pub fn new() -> CountSquareBuilder {
+        CountSquareBuilder {
+            ..Default::default()
+        }
+    }
+
+    pub fn with_square(mut self, square: Square) -> Self {
+        self.square = square;
+        self
+    }
+
+    pub fn build(self) -> CountSquare {
+        CountSquare {
+            square: self.square,
+            ..Default::default()
+        }
+    }
 }
 
 impl Draw for CountSquare {

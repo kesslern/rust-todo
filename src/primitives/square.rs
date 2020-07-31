@@ -32,6 +32,47 @@ pub struct Square {
     pub height: u16,
 }
 
+pub struct SquareBuilder {
+    square: Square,
+}
+
+impl SquareBuilder {
+    pub fn new(x: u16, y: u16, width: u16, height: u16) -> SquareBuilder {
+        SquareBuilder {
+            square: Square {
+                x,
+                y,
+                width,
+                height,
+                ..Default::default()
+            },
+        }
+    }
+
+    pub fn with_colors(mut self, colors: Colors) -> Self {
+        self.square.colors = Some(colors);
+        self
+    }
+
+    pub fn is_filled(mut self, filled: bool) -> Self {
+        if filled {
+            self.square.filled = Some(());
+        } else {
+            self.square.filled = None;
+        }
+        self
+    }
+
+    pub fn with_line_type(mut self, line_type: LineType) -> Self {
+        self.square.line_type = line_type;
+        self
+    }
+
+    pub fn build(self) -> Square {
+        self.square
+    }
+}
+
 impl Draw for Square {
     fn draw(&self) -> Result<()> {
         let chars: LineChars = match self.line_type {
