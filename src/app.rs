@@ -1,19 +1,21 @@
+use std::env::var;
+use std::io::stdout;
+use std::process::Command;
+
+use crossterm::{
+    cursor::Hide,
+    event::{EnableMouseCapture, Event, KeyCode, read},
+    execute,
+    Result,
+    style::{Color, Colors},
+    terminal::{Clear, ClearType},
+};
+use tempfile::NamedTempFile;
+
 use crate::components::{CountSquareBuilder, Text};
 use crate::primitives::SquareBuilder;
 use crate::screen::Screen;
 use crate::traits::{Draw, HandleEvent};
-use crossterm::{
-    cursor::Hide,
-    event::{read, EnableMouseCapture, Event, KeyCode},
-    execute,
-    style::{Color, Colors},
-    terminal::{Clear, ClearType},
-    Result,
-};
-use std::env::var;
-use std::io::{stdout, Write};
-use std::process::Command;
-use tempfile::NamedTempFile;
 
 pub struct TodoApp {
     _screen: Screen,

@@ -1,13 +1,16 @@
-use crate::primitives::Square;
-use crate::traits::{Draw, HandleEvent};
+use std::io::stdout;
+
 use crossterm::{
     cursor::MoveTo,
-    event::{Event, MouseEvent},
+    event::Event,
     execute,
-    style::Print,
     Result,
+    style::Print,
 };
-use std::io::{stdout, Write};
+use crossterm::event::MouseEventKind;
+
+use crate::primitives::Square;
+use crate::traits::{Draw, HandleEvent};
 
 #[derive(Default)]
 pub struct CountSquare {
@@ -53,17 +56,13 @@ impl Draw for CountSquare {
 }
 
 impl HandleEvent for CountSquare {
-    fn dispatch(&mut self, event: crossterm::event::Event) -> Result<()> {
+    fn dispatch(&mut self, event: Event) -> Result<()> {
         match event {
-            Event::Mouse(event) => match event {
-                MouseEvent::Up(_, _, _, _) => self.count += 1,
-                MouseEvent::Down(_, _, _, _) => {}
-                MouseEvent::Drag(_, _, _, _) => {}
-                MouseEvent::ScrollDown(_, _, _) => {}
-                MouseEvent::ScrollUp(_, _, _) => {}
+            Event::Mouse(event) => match event.kind {
+                MouseEventKind::Up(_) => self.count += 1,
+                _ => {}
             },
-            Event::Key(_) => {}
-            Event::Resize(_, _) => {}
+            _ => {}
         }
         Ok(())
     }

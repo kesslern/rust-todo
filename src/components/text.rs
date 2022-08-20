@@ -1,9 +1,11 @@
 extern crate unicode_segmentation;
 
-use crate::traits::Draw;
-use crossterm::{cursor::MoveTo, execute, style::Print, Result};
-use std::io::{stdout, Write};
+use std::io::stdout;
+
+use crossterm::{cursor::MoveTo, execute, Result, style::Print};
 use unicode_segmentation::UnicodeSegmentation;
+
+use crate::traits::Draw;
 
 /// A basic text component, allowing a string to be printed at a given location with an optional max length.
 #[derive(Default)]

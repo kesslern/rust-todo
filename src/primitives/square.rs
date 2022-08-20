@@ -1,13 +1,14 @@
-use crate::constants::{LineChars, CHARS};
-use crate::traits::Draw;
+use std::io::stdout;
 
 use crossterm::{
     cursor::MoveTo,
     execute,
-    style::{Color, Colors, Print, SetColors},
     Result,
+    style::{Color, Colors, Print, SetColors},
 };
-use std::io::{stdout, Write};
+
+use crate::constants::{CHARS, LineChars};
+use crate::traits::Draw;
 
 pub enum LineType {
     Double,
